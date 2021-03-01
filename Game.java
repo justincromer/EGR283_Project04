@@ -1,3 +1,11 @@
+//EGR_283: Project04 
+//Created by: Justin Cromer
+//Date: Feb 20, 2021
+//A program to build a small database of game information using singly linked lists.
+//Note: All game data was obtained from BoardGameGeek.com. Any game rated without a top age was 
+//	given a top age of 99. Game information that provided only an average time were given a max/min
+//	of plus or minus 10 minutes (example: 120 minutes becomes 110-130 minutes).
+
 package edu.mtc.egr283.project04;
 
 import java.util.Scanner;
@@ -12,12 +20,16 @@ public class Game {
 	private int maxPlayers;
 	private int minPlayTime;
 	private int maxPlayTime;
-	
-	private static final String NEW_LINE = "\n";
+
 	private static final int MAX_AGE = 99;
 	
+	
+	/**
+	 * Constructor. As per assignment UML, takes in no parameters.
+	 * Initialize variables.
+	 */
 	public Game() {
-		this.name = "New Game";
+		this.name = "";
 		this.minAge = 0;
 		this.maxAge = 0;
 		this.minPlayers = 0;
@@ -192,23 +204,33 @@ public class Game {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		
-		sb.append("Game Name:\t" + this.getName() + Game.NEW_LINE);
+		sb.append(this.getName());
 		
-		// If maximum age is undefined (99), display as "(lowest age) +"
+		
+		// Formatting: conditionals for spacing
+		if(this.getName().length() < 16) {
+			sb.append("\t");
+		}//end of if (formatting)
+		if(this.getName().length() < 8) {
+			sb.append("\t");
+		}//end of if (formatting)
+		
+		
+		// If maximum age is undefined (99), display as "(lowest age)+"
 		if(this.getMaxAge() == Game.MAX_AGE) {
-			sb.append("Player Age:\t" + this.getMinAge() + "+ yrs." + Game.NEW_LINE);
+			sb.append("\t" + this.getMinAge() + "+ years");
 		}else {
-			sb.append("Player Age:\t" + this.getMinAge() + "-" + this.getMaxAge() + " yrs." + Game.NEW_LINE);
+			sb.append("\t" + this.getMinAge() + "-" + this.getMaxAge() + " years");
 		}//end of if else (age)
 		
 		// If the game has a fixed number of players, display only one number
 		if(this.getMinPlayers() == this.getMaxPlayers()) {
-			sb.append("Players:\t" + this.getMaxPlayers() + Game.NEW_LINE);
+			sb.append("\t" + this.getMaxPlayers());
 		}else {
-			sb.append("Players:\t" + this.getMinPlayers() + "-" + this.getMaxPlayers() + Game.NEW_LINE);
+			sb.append("\t" + this.getMinPlayers() + "-" + this.getMaxPlayers());
 		}//end of if else (number of players)
 		
-		sb.append("Time Needed:\t" + this.getMinPlayTime() + "-"+ this.getMaxPlayTime() + " minutes" + Game.NEW_LINE);
+		sb.append("\t" + this.getMinPlayTime() + "-"+ this.getMaxPlayTime() + " minutes\t");
 		
 		return sb.toString();
 	}// Ending bracket of method toString

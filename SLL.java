@@ -35,6 +35,10 @@ public class SLL<E> {
 		this.addAfter(cursor, new SLLNode<E>(newNodeData, null));
 	}//end of method add
 	
+	public void setData(E newNodeData, int position) {
+		(this.find(position)).setNodeData(newNodeData);
+	}// Ending bracket of method
+	
 	public E remove(int position) {
 		SLLNode<E> cursor = this.head;
 		if(position > 0) {
@@ -52,7 +56,7 @@ public class SLL<E> {
 		return rv;
 	}//end of method remove(int)
 	
-	public E remove(E targetData) {
+	public E removeData(E targetData) {
 		return this.remove(this.findIndex(targetData));
 	}//end of method remove(E)
 	

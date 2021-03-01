@@ -1,3 +1,11 @@
+//EGR_283: Project04 
+//Created by: Justin Cromer
+//Date: Feb 20, 2021
+//A program to build a small database of game information using singly linked lists.
+//Note: All game data was obtained from BoardGameGeek.com. Any game rated without a top age was 
+//	given a top age of 99. Game information that provided only an average time were given a max/min
+//	of plus or minus 10 minutes (example: 120 minutes becomes 110-130 minutes).
+
 package edu.mtc.egr283.project04;
 
 import java.util.Scanner;
@@ -22,7 +30,7 @@ public class GameCatalogue {
 	 * @param newGame
 	 */
 	public void addGame(Game newGame) {	
-		this.index.addAtHead(Integer.valueOf(this.getSize()));
+		this.index.addAtHead(this.getSize());
 		this.games.addAtHead(newGame);
 	}// Ending bracket of method addGame
 	
@@ -35,18 +43,21 @@ public class GameCatalogue {
 		Game a, b;
 		
 		// Make a temporary variable for the game sought
-		a = this.games.getDataAtPosition(this.index.getDataAtPosition(Integer.valueOf(index)));
+		a = this.games.getDataAtPosition(this.index.getDataAtPosition(index));
 		
+		if(a == null) {
+			b = null;
+		} else {
 		// Copy the data to a new object so as not to break encapsulation
-		b = new Game();
-		b.setName(a.getName());
-		b.setMinAge(a.getMinAge());
-		b.setMaxAge(a.getMaxAge());
-		b.setMinPlayers(a.getMinPlayers());
-		b.setMaxPlayers(a.getMaxPlayers());
-		b.setMinPlayTime(a.getMinPlayTime());
-		b.setMaxPlayTime(a.getMaxPlayTime());
-		
+			b = new Game();
+			b.setName(a.getName());
+			b.setMinAge(a.getMinAge());
+			b.setMaxAge(a.getMaxAge());
+			b.setMinPlayers(a.getMinPlayers());
+			b.setMaxPlayers(a.getMaxPlayers());
+			b.setMinPlayTime(a.getMinPlayTime());
+			b.setMaxPlayTime(a.getMaxPlayTime());
+		}// Ending bracket of else
 		// Return a copy of the game information requested
 		return b;
 	}// Ending bracket of method getGame
@@ -62,7 +73,7 @@ public class GameCatalogue {
 	/**
 	 * A simple linear search method to retrieve a game's information from the catalog.
 	 * @param gameName of game to retrieve.
-	 * @return game requested.
+	 * @return Copy of game data requested.
 	 */
 	public Game findGame(String gameName) {
 		Game a, b;
@@ -116,12 +127,23 @@ public class GameCatalogue {
 	 * @param gameName of which to remove.
 	 */
 	public void removeGame(String gameName) {
-		System.out.println("Removed game: " + this.findGame(gameName).toString());
-		System.out.println();
-		System.out.println();
-		
-		//STILL NEED TO DEAL WITH INDEX REMOVAL
-		this.games.remove(getMemoryAddress(gameName));
+		int temp;
+		for(int i = 0; i < this.getSize(); ++i) {
+			if(this.getGame(i) == null) {
+				continue;
+			}// Ending bracket of if
+			if(this.games.getDataAtPosition(this.index.getDataAtPosition(i)).compareName(gameName)) {
+				System.out.println("Successfully removed " + "'" + gameName + "'.");
+				temp = this.index.getDataAtPosition(i);
+				this.games.removeData(this.games.getDataAtPosition(this.index.getDataAtPosition(i)));
+				this.index.remove(i);
+				
+				// After removing the game and index data, remaining index data must be
+				//	shifted to retain an index without gaps.
+				this.shiftIndexData(temp);
+				break;
+			}// Ending bracket of if
+		}// Ending bracket of for loop
 		
 	}// Ending bracket of method removeGame
 	
@@ -129,58 +151,69 @@ public class GameCatalogue {
 	 * Method to sort the catalog into lexographic order. The purpose of this method
 	 * is to sort the index list while leaving the raw game data untouched.
 	 */
-	public void sortCatalogue() {
+	public void sortCatalogue() {		
 		int tempIndex;
 		
 		for(int length = this.getSize(); length > 1; --length) {
 			
 			for(int i = 0; i < length - 1; ++i) {
-				
-				if(this.getGame(this.index.getDataAtPosition(i)).compareTo(this.
-								getGame(this.index.getDataAtPosition(i + 1))) > 0 ) {
+				if(this.getGame(i) == null) {
+					continue;
+				}// Ending bracket of if
+				if(this.getGame(i).compareTo(this.getGame(i + 1)) > 0 ) {
 					
-					tempIndex = this.index.getDataAtPosition(i + 1);
+					tempIndex = this.index.getDataAtPosition(i);
 					
-					this.index.remove(i + 1);
-					this.index.add(Integer.valueOf(tempIndex), i);
+					this.index.setData(this.index.getDataAtPosition(i + 1), i);
 					
-				}//end of if
+					this.index.setData(tempIndex, i + 1);
+				}//end of if (lexographic comparison)
 			}//end of INNER for loop
 		}//end of OUTER for loop
-
 	}// Ending bracket of method sortCatalogue
-	
 	
 	@Override
 	/**
-	 * Method to return game catalog data as a String
+	 * Method to return game catalog data as a String.
 	 * @return String form of the catalog.
 	 */
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		
+		 // Header Section
+		sb.append("NAME\t\t\tAGE\t\tPLAYERS\tTIME\t\t\tINDEX\tDATA\n"); 
+		for(int i = 0; i < 85; ++i) {
+			sb.append("-");
+		}//end of for loop (formatting)
+		sb.append("\n");
+		
+		
+		// Game data 
 		for(int i = 0; i < this.getSize(); ++i) {
-			sb.append(this.getGame(this.index.getDataAtPosition(i)).toString() + "\n");
+			if(this.getGame(i) == null) {
+				System.out.println("break");
+				break;
+			}// Ending bracket of if
+			sb.append(this.getGame(i).toString() + "\t");
+			sb.append(i + "\t"); //index position
+			sb.append(this.index.getDataAtPosition(i) + "\n"); //index data
+		
 		}//end of for loop
 		
 		return sb.toString();
 	}// Ending bracket of method toString\
 	
 	
-	
-	// Helper method for game removal
-	private Game getMemoryAddress(String gameName) {
-		Game actual = null;
-		
-		// Find the game
-		for(int i = 0; i <this.getSize(); ++i) {
-			if(this.getGame(i).compareName(gameName)){
-				actual = this.getGame(i);
+	// Helper method to deal with reIndexing every time a game is removed. Though the 
+	//	index itself gets shifted with game removal, the raw data in the index remains
+	//	the same.  To correct this, we shift the data after the removed index data.
+	private void shiftIndexData(int dataRemoved) {
+		for(int i = 0; i < this.getSize(); ++i) {
+			if(this.index.getDataAtPosition(i) > dataRemoved) {
+				this.index.setData(this.index.getDataAtPosition(i) - 1, i);
 			}// Ending bracket of if
-		}// Ending bracket of for loop
-		
-		return actual;
-	}// Ending bracket of method getMemoryAddress
+		}// End of for loop
+	}// Ending bracket of method shiftIndexData
 	
 	
 	

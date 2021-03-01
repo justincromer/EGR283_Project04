@@ -25,8 +25,6 @@ public class GameCatalogueDriver {
 		
 		GameCatalogue gc = new GameCatalogue();
 		
-		
-		
 		// Handle potential exception
 		try {
 			eReader = new Scanner(new File(fileName));
@@ -65,20 +63,30 @@ public class GameCatalogueDriver {
 		//		*getGame				[GameCatalogue class]
 	
 		methodTesting("findGame");
-		System.out.println("Find game 'Go':\n\n" + gc.findGame("Go").toString());
-		System.out.println("Find game 'Chutes and Ladders':\n\n" + gc.findGame("Chutes and Ladders").toString());
-		System.out.println("Find game 'Stratego':\n\n" + gc.findGame("Stratego").toString());
+		System.out.println("\nFind game 'Go':\n\n*****\t" + gc.findGame("Go").toString());
+		System.out.println("\nFind game 'Chutes and Ladders':\n\n*****\t" + gc.findGame("Chutes and Ladders").toString());
+		System.out.println("\nFind game 'Stratego':\n\n*****\t" + gc.findGame("Stratego").toString());
 		
-		
+	
 		methodTesting("sortCatalogue");
 		gc.sortCatalogue();
 		System.out.println(gc.toString());
 		
+
+		methodTesting("removeGame");
+		System.out.println("\nREMOVE GAME: 'Apples to Apples'");
+		gc.removeGame("Apples to Apples");
+		System.out.println("\nREMOVE GAME: 'Stratego'");
+		gc.removeGame("Stratego");
+		System.out.println("\nREMOVE GAME: 'Go'");
+		gc.removeGame("Go");
+		System.out.println("\nREMOVE GAME: 'Monopoly'");
+		gc.removeGame("Monopoly");
 	
-		
-		// TO DO:
-		//	*removeGame
-		
+
+		// Proof of game removal.
+		methodTesting("toString");
+		System.out.println(gc.toString());
 		
 		// Close the Scanner object.
 		eReader.close();
